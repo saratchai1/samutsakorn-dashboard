@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SSK Water Executive Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="rail" aria-label="Dashboard navigation">
+        <div class="brand-mark">SSK</div>
+        <button class="rail-button active" data-view="overview"><span class="icon">⌁</span><span>Overview</span></button>
+        <button class="rail-button" data-view="factory"><span class="icon">▦</span><span>Factory</span></button>
+        <button class="rail-button" data-view="quality"><span class="icon">◌</span><span>Quality</span></button>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Samut Sakhon Industrial Estate</p>
+            <h1>Water Balance Executive Dashboard</h1>
+            <p class="subhead">สรุปน้ำดีและน้ำทิ้งรายเดือนของ 5 โรงงาน จากข้อมูล IoT water meter</p>
+          </div>
+          <div class="toolbar">
+            <label class="control"><span>เดือน/ปี</span><select id="monthSelect"></select></label>
+            <label class="control"><span>โรงงาน</span><select id="factorySelect"></select></label>
+            <label class="control"><span>ประเภทน้ำ</span><select id="typeSelect"></select></label>
+          </div>
+        </header>
+
+        <section class="verdict-panel" id="verdictPanel">
+          <div>
+            <p class="eyebrow">Meter Summary</p>
+            <h2 id="verdictTitle">กำลังโหลดข้อมูล</h2>
+            <p id="verdictCopy"></p>
+          </div>
+          <div class="verdict-meter">
+            <svg viewBox="0 0 220 120" role="img" aria-label="Wastewater ratio gauge">
+              <path class="gauge-track" d="M30 100 A80 80 0 0 1 190 100" />
+              <path class="gauge-fill" id="gaugeFill" d="M30 100 A80 80 0 0 1 190 100" />
+              <text id="gaugeText" x="110" y="82" text-anchor="middle">-</text>
+              <text x="110" y="108" text-anchor="middle" class="gauge-caption">น้ำทิ้ง / น้ำดี</text>
+            </svg>
+          </div>
+        </section>
+
+        <section class="kpi-grid executive-kpis">
+          <article class="kpi-card"><span class="kpi-label">น้ำดีรวมทั้งหมด</span><strong id="kpiIn">-</strong><span class="kpi-note">ลบ.ม.</span></article>
+          <article class="kpi-card"><span class="kpi-label">น้ำทิ้งรวมทั้งหมด</span><strong id="kpiOut">-</strong><span class="kpi-note">ลบ.ม.</span></article>
+          <article class="kpi-card"><span class="kpi-label">ส่วนต่างที่เปรียบเทียบได้</span><strong id="kpiDiff">-</strong><span class="kpi-note">น้ำดี - น้ำทิ้ง</span></article>
+          <article class="kpi-card"><span class="kpi-label">น้ำทิ้งต่อน้ำดี</span><strong id="kpiRatio">-</strong><span class="kpi-note">เฉพาะข้อมูลครบ</span></article>
+          <article class="kpi-card"><span class="kpi-label">เดือน/โรงงานปกติ</span><strong id="kpiNormal">-</strong><span class="kpi-note">น้ำทิ้งต่ำกว่าน้ำดี</span></article>
+          <article class="kpi-card"><span class="kpi-label">ผิดปกติ</span><strong id="kpiAbnormal">-</strong><span class="kpi-note">น้ำทิ้งมากกว่าน้ำดี</span></article>
+          <article class="kpi-card"><span class="kpi-label">ใช้น้ำดีสูงสุด</span><strong id="kpiTopIn">-</strong><span class="kpi-note">โรงงาน</span></article>
+          <article class="kpi-card"><span class="kpi-label">น้ำทิ้งสูงสุด</span><strong id="kpiTopOut">-</strong><span class="kpi-note">โรงงาน</span></article>
+        </section>
+
+        <section class="view active" id="overviewView">
+          <div class="chart-grid">
+            <article class="panel panel-wide">
+              <div class="panel-head">
+                <div><p class="eyebrow">Water Balance</p><h3>น้ำดีเทียบกับน้ำทิ้งรายเดือน</h3></div>
+                <span class="metric-chip">Side-by-side monthly bars</span>
+              </div>
+              <div class="chart" id="waterBalanceChart"></div>
+            </article>
+            <article class="panel">
+              <div class="panel-head">
+                <div><p class="eyebrow">Gauge</p><h3>สัดส่วนน้ำทิ้งต่อน้ำดี</h3></div>
+              </div>
+              <div class="gauge-card" id="ratioGauge"></div>
+            </article>
+          </div>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">Factory Comparison</p><h3>เปรียบเทียบรายโรงงาน</h3></div>
+            </div>
+            <div class="chart" id="factoryCompareChart"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">Executive Table</p><h3>ตารางสรุปที่ใช้สื่อสารผู้บริหาร</h3></div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>เดือน/ปี</th>
+                    <th>โรงงาน</th>
+                    <th>น้ำดีรวม</th>
+                    <th>น้ำทิ้งรวม</th>
+                    <th>ส่วนต่าง</th>
+                    <th>น้ำทิ้ง/น้ำดี</th>
+                  </tr>
+                </thead>
+                <tbody id="summaryTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="factoryView">
+          <div class="split-grid">
+            <article class="panel">
+              <div class="panel-head">
+                <div><p class="eyebrow">Factory Focus</p><h3 id="factoryTitle">โรงงาน</h3></div>
+                <span class="metric-chip" id="factoryBadge"></span>
+              </div>
+              <div class="balance-stack" id="balanceStack"></div>
+            </article>
+            <article class="panel panel-wide">
+              <div class="panel-head">
+                <div><p class="eyebrow">Trend</p><h3>แนวโน้มรายเดือนของโรงงานที่เลือก</h3></div>
+              </div>
+              <div class="chart" id="factoryTrendChart"></div>
+            </article>
+          </div>
+          <article class="panel">
+            <div class="panel-head">
+              <div><p class="eyebrow">Point Detail</p><h3>รายละเอียดตามจุดมิเตอร์</h3></div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>เดือน</th><th>โรงงาน</th><th>ประเภท</th><th>Location</th><th>Point</th><th>ปริมาณ</th><th>Records</th><th>Alarms</th>
+                  </tr>
+                </thead>
+                <tbody id="pointTable"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <section class="view" id="qualityView">
+          <div class="single-grid">
+            <article class="panel panel-wide">
+              <div class="panel-head">
+                <div><p class="eyebrow">Unknown Meters</p><h3>รายการที่แยกโรงงาน/ประเภทน้ำไม่ได้</h3></div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Location</th><th>Point</th><th>ประเภท</th><th>ปริมาณรวม</th><th>Records</th><th>Alarms</th></tr></thead>
+                  <tbody id="unknownTable"></tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./data/executive_water_data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
