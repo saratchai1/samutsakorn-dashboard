@@ -3,15 +3,16 @@
 
   const DATA = window.EXECUTIVE_WATER_DATA;
   if (!DATA) {
-    throw new Error("EXECUTIVE_WATER_DATA must be loaded before the August 2026 update.");
+    throw new Error("EXECUTIVE_WATER_DATA must be loaded before the July/August 2026 update.");
   }
 
-  const MONTH = "2026-08";
+  const AUGUST_MONTH = "2026-08";
+  const JULY_MONTH = "2026-07";
   const VR_FOOD_WASTEWATER_ASSUMPTION = 0.45;
 
-  const SUMMARY = [
+  const AUGUST_SUMMARY = [
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_in: 34592.0,
       wastewater: 2140.0,
@@ -22,7 +23,7 @@
       points: ["P10", "P2", "P4", "P6"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Longtex",
       water_in: 2821.0,
       wastewater: 1690.0,
@@ -33,7 +34,7 @@
       points: ["P5", "P9"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "VR Food",
       water_in: 1267.0,
       wastewater: 570.15,
@@ -47,7 +48,7 @@
       wastewater_estimation_rate: VR_FOOD_WASTEWATER_ASSUMPTION,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "UBIS",
       water_in: 650.0,
       wastewater: 265.0,
@@ -58,7 +59,7 @@
       points: ["P13", "P7"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_in: 7709.0,
       wastewater: 2498.0,
@@ -70,9 +71,9 @@
     },
   ];
 
-  const MONTHLY_OVERVIEW = [
+  const AUGUST_MONTHLY_OVERVIEW = [
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       total_water_in: 47039.0,
       total_wastewater: 7163.15,
       comparable_water_in: 47039.0,
@@ -88,9 +89,9 @@
     },
   ];
 
-  const MONTHLY_TYPE = [
+  const AUGUST_MONTHLY_TYPE = [
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_type: "Wastewater",
       volume: 2140.0,
@@ -99,7 +100,7 @@
       points: ["P4", "P6"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_type: "Water In",
       volume: 34592.0,
@@ -108,7 +109,7 @@
       points: ["P10", "P2"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_type: "Wastewater",
       volume: 2498.0,
@@ -117,7 +118,7 @@
       points: ["P1", "P11"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_type: "Water In",
       volume: 7709.0,
@@ -126,7 +127,7 @@
       points: ["P12", "P3"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Longtex",
       water_type: "Wastewater",
       volume: 1690.0,
@@ -135,7 +136,7 @@
       points: ["P5"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Longtex",
       water_type: "Water In",
       volume: 2821.0,
@@ -144,7 +145,7 @@
       points: ["P9"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "UBIS",
       water_type: "Wastewater",
       volume: 265.0,
@@ -153,7 +154,7 @@
       points: ["P13"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "UBIS",
       water_type: "Water In",
       volume: 650.0,
@@ -162,7 +163,7 @@
       points: ["P7"],
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "VR Food",
       water_type: "Wastewater",
       volume: 570.15,
@@ -174,7 +175,7 @@
       estimation_rate: VR_FOOD_WASTEWATER_ASSUMPTION,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "VR Food",
       water_type: "Water In",
       volume: 1267.0,
@@ -184,9 +185,9 @@
     },
   ];
 
-  const POINT_DETAIL = [
+  const AUGUST_POINT_DETAIL = [
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_type: "Wastewater",
       location: "Huatamaki น้ำเสีย หลังโรงงาน",
@@ -196,7 +197,7 @@
       alarms: 34,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_type: "Water In",
       location: "P2",
@@ -206,7 +207,7 @@
       alarms: 0,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_type: "Water In",
       location: "P3",
@@ -216,7 +217,7 @@
       alarms: 2,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_type: "Wastewater",
       location: "APEX น้ำเสีย 1",
@@ -226,7 +227,7 @@
       alarms: 84,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Longtex",
       water_type: "Wastewater",
       location: "Longtex น้ำเสีย",
@@ -236,7 +237,7 @@
       alarms: 0,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_type: "Wastewater",
       location: "APEX น้ำเสีย 2",
@@ -246,7 +247,7 @@
       alarms: 1,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "UBIS",
       water_type: "Water In",
       location: "UBIS น้ำดี",
@@ -256,7 +257,7 @@
       alarms: 3,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "VR Food",
       water_type: "Water In",
       location: "VR Food น้ำดี",
@@ -266,7 +267,7 @@
       alarms: 4,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "VR Food",
       water_type: "Wastewater",
       location: "VR Food น้ำเสีย (ประมาณการ 45% ของน้ำดี)",
@@ -279,7 +280,7 @@
       estimation_rate: VR_FOOD_WASTEWATER_ASSUMPTION,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Longtex",
       water_type: "Water In",
       location: "Longtex น้ำดี",
@@ -289,7 +290,7 @@
       alarms: 0,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "APEX",
       water_type: "Water In",
       location: "P10",
@@ -299,7 +300,7 @@
       alarms: 0,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_type: "Wastewater",
       location: "Huatamaki น้ำเสีย หน้าโรงงาน",
@@ -309,7 +310,7 @@
       alarms: 28,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "Huatamaki",
       water_type: "Water In",
       location: "Huatamaki น้ำดี หน้าโรงงาน",
@@ -319,7 +320,7 @@
       alarms: 0,
     },
     {
-      month: MONTH,
+      month: AUGUST_MONTH,
       factory: "UBIS",
       water_type: "Wastewater",
       location: "UBIS น้ำเสีย",
@@ -330,8 +331,20 @@
     },
   ];
 
-  const UPDATE_METADATA = {
-    month: MONTH,
+  const copyAugustToJuly = (rows) => rows.map((row) => ({
+    ...row,
+    month: JULY_MONTH,
+    copied_from_month: AUGUST_MONTH,
+    imputed: true,
+  }));
+
+  const JULY_SUMMARY = copyAugustToJuly(AUGUST_SUMMARY);
+  const JULY_MONTHLY_OVERVIEW = copyAugustToJuly(AUGUST_MONTHLY_OVERVIEW);
+  const JULY_MONTHLY_TYPE = copyAugustToJuly(AUGUST_MONTHLY_TYPE);
+  const JULY_POINT_DETAIL = copyAugustToJuly(AUGUST_POINT_DETAIL);
+
+  const AUGUST_METADATA = {
+    month: AUGUST_MONTH,
     source_file: "SSK_water_meter_260827.xlsx",
     source_sheet: "data-1787823342279 (2)",
     source_rows: 640,
@@ -357,23 +370,51 @@
     ],
   };
 
-  const replaceMonth = (rows, updateRows) => [
-    ...(Array.isArray(rows) ? rows : []).filter((row) => row?.month !== MONTH),
+  const JULY_METADATA = {
+    month: JULY_MONTH,
+    copied_from_month: AUGUST_MONTH,
+    imputed: true,
+    contains_estimated_values: true,
+    reason: "No July 2026 logger dataset was provided; project instruction is to copy August 2026 values exactly into July 2026.",
+    notes: [
+      "All July 2026 dashboard values, records, alarms, mappings, and statuses are exact copies of August 2026 with only the month changed to 2026-07.",
+      "VR Food July wastewater therefore remains 570.15 m3, based on the same 45% of Water In assumption used for August.",
+      "July values are copied/imputed and are not direct July data-logger measurements.",
+    ],
+  };
+
+  const REPLACED_MONTHS = new Set([JULY_MONTH, AUGUST_MONTH]);
+  const replaceUpdatedMonths = (rows, updateRows) => [
+    ...(Array.isArray(rows) ? rows : []).filter((row) => !REPLACED_MONTHS.has(row?.month)),
     ...updateRows,
   ];
 
-  DATA.months = [...new Set([...(Array.isArray(DATA.months) ? DATA.months : []), MONTH])]
-    .sort((a, b) => String(a).localeCompare(String(b)));
-  DATA.date_max = UPDATE_METADATA.source_date_max;
-  DATA.summary = replaceMonth(DATA.summary, SUMMARY);
-  DATA.monthly_overview = replaceMonth(DATA.monthly_overview, MONTHLY_OVERVIEW);
-  DATA.monthly_type = replaceMonth(DATA.monthly_type, MONTHLY_TYPE);
-  DATA.point_detail = replaceMonth(DATA.point_detail, POINT_DETAIL);
+  DATA.months = [...new Set([
+    ...(Array.isArray(DATA.months) ? DATA.months : []),
+    JULY_MONTH,
+    AUGUST_MONTH,
+  ])].sort((a, b) => String(a).localeCompare(String(b)));
+
+  DATA.date_max = AUGUST_METADATA.source_date_max;
+  DATA.summary = replaceUpdatedMonths(DATA.summary, [...JULY_SUMMARY, ...AUGUST_SUMMARY]);
+  DATA.monthly_overview = replaceUpdatedMonths(
+    DATA.monthly_overview,
+    [...JULY_MONTHLY_OVERVIEW, ...AUGUST_MONTHLY_OVERVIEW],
+  );
+  DATA.monthly_type = replaceUpdatedMonths(
+    DATA.monthly_type,
+    [...JULY_MONTHLY_TYPE, ...AUGUST_MONTHLY_TYPE],
+  );
+  DATA.point_detail = replaceUpdatedMonths(
+    DATA.point_detail,
+    [...JULY_POINT_DETAIL, ...AUGUST_POINT_DETAIL],
+  );
 
   DATA.data_updates = [
     ...(Array.isArray(DATA.data_updates)
-      ? DATA.data_updates.filter((item) => item?.month !== MONTH)
+      ? DATA.data_updates.filter((item) => !REPLACED_MONTHS.has(item?.month))
       : []),
-    UPDATE_METADATA,
+    JULY_METADATA,
+    AUGUST_METADATA,
   ];
 })();
