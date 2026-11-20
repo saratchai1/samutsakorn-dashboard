@@ -19,4 +19,9 @@ jobs:
           node --check data/executive_water_update_2026_08.js
           node --check data/executive_water_update_2026_11.js
       - name: Dataset reconciliation tests
-        run: node --test tests/sskwater-2026-11.test.cjs
+        run: node --test tests/*.test.cjs
+      - name: Validate Netlify static publish assets
+        run: |
+          sh scripts/build-netlify.sh
+          test -s dist/index.html
+          test -s dist/data/executive_water_update_2026_11.js
