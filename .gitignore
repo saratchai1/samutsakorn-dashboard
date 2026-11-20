@@ -1,0 +1,5 @@
+# Netlify CLI local state must not be committed.
+.netlify/
+
+# Generated deploy assets.
+dist/
