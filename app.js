@@ -47,6 +47,8 @@ const els = {
   factoryTrend: $("#factoryTrendChart"),
   pointTable: $("#pointTable"),
   unknownTable: $("#unknownTable"),
+  sourceNotice: $("#sourceNotice"),
+  sourceAuditTable: $("#sourceAuditTable"),
 };
 
 init();
@@ -94,6 +96,7 @@ window.renderDashboard = render;
 function render() {
   const rows = filteredSummary();
   renderSummary(rows);
+  renderSourceNotice();
   renderKpis(rows);
   renderCharts(rows);
   renderTable(rows);
@@ -125,6 +128,33 @@ function filteredPointRows() {
 
 function completeRows(rows) {
   return rows.filter((row) => row.status !== "ข้อมูลไม่ครบ");
+}
+
+function renderSourceNotice() {
+  if (!els.sourceNotice) return;
+  const updates = Array.isArray(DATA.data_updates) ? DATA.data_updates : [];
+  const scoped = state.month === "ALL" ? updates : updates.filter((u) => u.month === state.month);
+  if (!scoped.length) {
+    els.sourceNotice.textContent = "ข้อมูลย้อนหลังจากแหล่งเดิม · ใช้ผลรวม decode_usage ของแต่ละเดือน";
+    return;
+  }
+  const notes = [];
+  const partial = scoped.filter((u) => u.is_partial_month).map((u) => u.month);
+  const copied = scoped.filter((u) => u.imputed).map((u) => u.month);
+  const estimated = scoped.filter((u) => u.contains_estimated_values).map((u) => u.month);
+  if (partial.length) notes.push("ข้อมูลไม่เต็มเดือน: " + partial.join(", "));
+  if (copied.length) notes.push("ข้อมูลคัดลอก ไม่ใช่ผลวัดจริง: " + copied.join(", "));
+  if (estimated.length) notes.push("VR Food น้ำทิ้งประมาณการ 45% ของน้ำดี: " + estimated.join(", "));
+  const current = scoped.length === 1 ? scoped[0] : null;
+  if (current && Number.isFinite(current.source_rows)) notes.unshift("บันทึกจากมิเตอร์ " + fmt.format(current.source_rows) + " รายการ");
+  if (current && current.source_date_min && current.source_date_max) {
+    notes.unshift("ช่วงข้อมูล " + current.source_date_min.slice(0, 10) + " ถึง " + current.source_date_max.slice(0, 10));
+  }
+  if (current && current.meter_gap_points?.length) {
+    notes.push("จุดที่มีช่วงขาดข้อมูล: " + current.meter_gap_points.join(", "));
+  }
+  if (state.month === "ALL") notes.unshift("ข้อมูลอัปเดตล่าสุดถึง 19 พ.ย. 2569");
+  els.sourceNotice.textContent = notes.join(" · ") || "ข้อมูลจากมิเตอร์ที่บันทึกในระบบ";
 }
 
 function renderSummary(rows) {
@@ -267,6 +297,7 @@ function renderTable(rows) {
           ${showOut ? "<th>น้ำทิ้งรวม</th>" : ""}
           ${showComparison ? "<th>ส่วนต่าง</th>" : ""}
           ${showComparison ? "<th>น้ำทิ้ง/น้ำดี</th>" : ""}
+          <th>สถานะ</th><th>คุณภาพข้อมูล</th>
         </tr>
       `;
     }
@@ -280,6 +311,8 @@ function renderTable(rows) {
       ${showOut ? `<td>${fmt.format(row.wastewater)}</td>` : ""}
       ${showComparison ? `<td>${fmt.format(row.difference)}</td>` : ""}
       ${showComparison ? `<td>${row.ratio == null ? "-" : pct.format(row.ratio)}</td>` : ""}
+      <td>${escapeHtml(row.status)}</td>
+      <td>${escapeHtml([row.imputed ? "คัดลอกจากอีกเดือน" : "", row.is_partial_month ? "ไม่เต็มเดือน" : "", row.wastewater_estimated ? "น้ำทิ้งประมาณการ 45%" : ""].filter(Boolean).join(" / ") || "จากมิเตอร์")}</td>
     </tr>
   `).join("");
 }
@@ -319,18 +352,40 @@ function renderFactory() {
   els.pointTable.innerHTML = filteredPointRows().slice(0, 300).map((row) => `
     <tr>
       <td>${row.month}</td><td>${row.factory}</td><td>${labelType(row.water_type)}</td><td>${escapeHtml(row.location)}</td>
-      <td>${row.point}</td><td>${fmt.format(row.volume)}</td><td>${fmt.format(row.records)}</td><td>${fmt.format(row.alarms)}</td>
+      <td>${escapeHtml(row.point)}</td><td>${fmt.format(row.volume)}${row.estimated ? " (ประมาณการ)" : ""}</td><td>${fmt.format(row.records)}</td><td>${fmt.format(row.alarms)}</td>
     </tr>
   `).join("");
 }
 
 function renderQuality() {
-  els.unknownTable.innerHTML = DATA.unknown.map((row) => `
+  const updates = [...(DATA.data_updates || [])].sort((a, b) => b.month.localeCompare(a.month));
+  if (els.sourceAuditTable) {
+    els.sourceAuditTable.innerHTML = updates.map((row) => {
+      const source = row.imputed ? "คัดลอกจาก " + row.copied_from_month : (row.source_file || "-");
+      const dateRange = row.source_date_min && row.source_date_max
+        ? row.source_date_min.slice(0, 10) + " — " + row.source_date_max.slice(0, 10) : "-";
+      const flags = [
+        row.imputed ? "คัดลอก" : "",
+        row.is_partial_month ? "ข้อมูลไม่เต็มเดือน" : "",
+        row.contains_estimated_values ? "มีค่าประมาณการ" : "",
+      ].filter(Boolean).join(" / ") || "จากมิเตอร์";
+      const notes = Array.isArray(row.notes) ? row.notes.join("; ") : (row.reason || "-");
+      return `<tr>
+        <td>${escapeHtml(row.month)}</td>
+        <td>${escapeHtml(source)}</td>
+        <td>${Number.isFinite(row.source_rows) ? fmt.format(row.source_rows) : "-"}</td>
+        <td>${escapeHtml(dateRange)}</td>
+        <td>${escapeHtml(flags)}</td>
+        <td>${escapeHtml(notes)}</td>
+      </tr>`;
+    }).join("");
+  }
+  els.unknownTable.innerHTML = DATA.unknown.length ? DATA.unknown.map((row) => `
     <tr>
-      <td>${escapeHtml(row.location)}</td><td>${row.point}</td><td>${labelType(row.water_type)}</td>
+      <td>${escapeHtml(row.location)}</td><td>${escapeHtml(row.point)}</td><td>${labelType(row.water_type)}</td>
       <td>${fmt.format(row.volume)}</td><td>${fmt.format(row.records)}</td><td>${fmt.format(row.alarms)}</td>
     </tr>
-  `).join("");
+  `).join("") : '<tr><td colspan="6">ทุกจุดมิเตอร์ในไฟล์อัปเดตสามารถจับคู่กับโรงงานและประเภทน้ำเดิมได้</td></tr>';
 }
 
 function setTopGauge(ratio) {

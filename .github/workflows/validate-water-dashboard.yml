@@ -1,0 +1,22 @@
+name: Validate SSK water dashboard
+on:
+  pull_request:
+  push:
+    branches: [main, data/sskwater-sep-nov-2026]
+
+jobs:
+  data-integrity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: JavaScript syntax
+        run: |
+          node --check app.js
+          node --check data/executive_water_data.js
+          node --check data/executive_water_update_2026_08.js
+          node --check data/executive_water_update_2026_11.js
+      - name: Dataset reconciliation tests
+        run: node --test tests/sskwater-2026-11.test.cjs
