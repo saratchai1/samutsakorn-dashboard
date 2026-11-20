@@ -1,0 +1,14 @@
+# Static production deployment for the SSK Water Balance Executive Dashboard.
+# Only whitelisted public assets are copied into dist/.
+[build]
+  command = "sh scripts/build-netlify.sh"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
